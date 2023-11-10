@@ -9,10 +9,10 @@ st.header('Ask your PDF📚')
 
 # Upload the file
 pdf = st.file_uploader('Upload your file here:', accept_multiple_files=True)
-# Extract the text
+
 if pdf:
     
-    # For single file
+    # Extract the text
     text = ut.read_pdf(pdf)
 
     # Split into chunks

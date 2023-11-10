@@ -16,18 +16,18 @@ import json
 
 def read_pdf(pdf):
 
-    # # For Single file
-    # pdf_reader = PdfReader(pdf)
-    # content = ''
-    # for page in pdf_reader.pages:
-    #     content += page.extract_text()
-
     # For multiple files
     content = ''
-    for i in range(len(pdf)):
-        pdf_reader = PdfReader(pdf[i])
-        for page in range(len(pdf_reader.pages)):
-            content += pdf_reader.pages[page].extract_text()
+    if len(pdf):
+        for i in range(len(pdf)):
+            pdf_reader = PdfReader(pdf[i])
+            for page in range(len(pdf_reader.pages)):
+                content += pdf_reader.pages[page].extract_text()
+    # For single file
+    else:
+        pdf_reader = PdfReader(pdf)
+        for page in pdf_reader.pages:
+            content += page.extract_text()
     
     return content
 
@@ -59,14 +59,6 @@ def get_answer(query,relevant_docs):
     response = chain.run(input_documents=relevant_docs, question=query)
     return response
 
-# def schema_creator():
-#     response_schemas = [
-#         ResponseSchema(name="question", description="Question generated from provided input text data."),
-#         ResponseSchema(name="choices", description="Available options for a multiple-choice question in comma separated."),
-#         ResponseSchema(name="answer", description="Correct answer for the asked question.")
-#     ]
-#     output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
-#     return output_parser
 
 def create_mcq(answer):
     response_schemas = [
@@ -82,8 +74,8 @@ def create_mcq(answer):
     chat_model = ChatOpenAI()
     prompt = ChatPromptTemplate(
         messages=[
-            HumanMessagePromptTemplate.from_template("""When a text input is given by the user, please generate multiple choice questions 
-            from it along with the correct answer. 
+            HumanMessagePromptTemplate.from_template("""When a text input is given by the user, 
+            please generate multiple choice questions from it along with the correct answer. 
             \n{format_instructions}\n{user_prompt}""")  
         ],
         input_variables=["user_prompt"],
